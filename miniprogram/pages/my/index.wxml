@@ -7,7 +7,7 @@
     <text
       bind:tap="goLogin"
       class="nickname"
-    >{{nickName || '游客'}}</text>
+    >{{nickName || '游客111'}}</text>
     <navigator
       hover-class="none"
       class="link"

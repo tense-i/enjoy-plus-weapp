@@ -18,11 +18,15 @@ Page({
   },
   async getUserProfile() {
     // 调用接口获取昵称和头像
-    const { code, data: { avatar, nickName } } = await wx.http.get('/userInfo')
+    const res = await wx.http.get('/userInfo')
+    const { code, data: { avatar, nickName } } = res
+    console.log(res)
     // 检测接口是否正常返回结果
     if (code !== 10000) return wx.utils.toast()
+    console.log(avatar, nickName)
     // 渲染数据
     this.setData({ avatar, nickName })
+    this.getUserInfo()
   },
 
   goLogin() {

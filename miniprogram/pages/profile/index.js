@@ -1,5 +1,5 @@
 // pages/profile/index.ts
-const currentPage = getCurrentPages()[0]
+const currentPage = getCurrentPages().pop()
 const app = getApp()
 Page({
 
@@ -7,21 +7,25 @@ Page({
    * 页面的初始数据
    */
   data: {
-    nickName: '',
   },
   onLoad() {
     if (app.userProfile)
       this.setData({ ...app.userProfile })
   },
   async updateUserInfo(ev) {
-    const { nickName } = ev.detail
+    const nickName = ev.detail.value
     if (!nickName || nickName === '')
       return
-    const { code } = await wx.http.post('/userInfo', { nickName })
+    const { code } = await wx.http.put('/userInfo', { nickName })
 
     if (code !== 10000) return wx.utils.toast('更新失败')
     // 当前在profile页面、要修改my页面中的nickName
     currentPage.setData({ nickName })
+    wx.utils.toast('更新成功')
+    //刷新主页
+    const homePage = getCurrentPages().find(page => page.route === '/pages/my/index')
+    homePage && homePage.refresh()
+
   },
   async getAvatar(ev) {
     // api上传

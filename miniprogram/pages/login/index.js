@@ -3,9 +3,10 @@ const app = getApp()
 Page({
   data: {
     countDownVisible: false,
-    mobile: '',
+    mobile: '15574773510',
     redirect: '',
     smsCode: '',
+    code: '',
   },
   behaviors: [validate],
   onLoad({ redirect }) {
@@ -30,6 +31,10 @@ Page({
       mobile: this.data.mobile,
     })
     console.log(res)
+    if (res.code !== 10000)
+      return wx.utils.toast(res.message)
+    wx.utils.toast('短信验证码发送成功')
+    this.setData({ code: res.data.code })
   },
 
   countDownChange(ev) {

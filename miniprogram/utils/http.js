@@ -5,7 +5,9 @@ http.baseURL = 'https://live-api.itheima.net'
 
 // 请求拦截器，添加 token
 http.intercept.request = (header) => {
+  console.log(header.url)
   header.Authorization = `Bearer ${getApp().token}`
+  console.log(header.Authorization)
   return header
 }
 // 响应拦截器，返回核心数据 data

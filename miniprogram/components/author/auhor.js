@@ -18,8 +18,14 @@ Component({
       const app = getApp()
       const isLogin = Boolean(app.token)
       this.setData({ isLogin })
+      // 获取当前页面栈 
+      const currentPage = getCurrentPages().pop()
+
       const pageStack = getCurrentPages()
       if (!isLogin) {
+        // // 使用空白函数覆盖原生的生命周期 onLoad onShow
+        currentPage.onLoad = () => { } // 空白函数
+        currentPage.onShow = () => { } // 空白函数
         wx.redirectTo({
           url: '/pages/login/index?redirect=' + pageStack.route,
         })
