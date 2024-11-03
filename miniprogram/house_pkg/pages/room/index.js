@@ -1,66 +1,58 @@
-// house_pkg/pages/room/index.ts
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-
+    point: '',
+    building: '',
+    rooms: [],
   },
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad() {
-
+  onLoad({ point, building }) {
+    // 创建房间
+    this.fake(point, building)
   },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
+  fake(point, building) {
+    // 生成多少个房间
+    const size = Math.floor(Math.random() * 5) + 4
+    const rooms = []
+    for (let i = 0; i < size; i++) {
+      // 楼层号生成 1 ~ 20
+      const floor = Math.floor(Math.random() * 19) + 1
+      // 具体的房间号生成 1 ~ 3
+      const No = Math.floor(Math.random() * 2) + 1
+      const room = [floor, 0, No].join('')
+      // 检测是否有重复的房间号
+      if (rooms.includes(room)) return
+      // 记录生成完整的房间号
+      rooms.push(room)
+    }
+    // 渲染数据
+    this.setData({ rooms, point, building })
   },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-
+})
+Page({
+  data: {
+    point: '',
+    building: '',
+    rooms: [],
   },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
+  onLoad({ point, building }) {
+    // 创建房间
+    this.fake(point, building)
   },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
+  fake(point, building) {
+    // 生成多少个房间
+    const size = Math.floor(Math.random() * 5) + 4
+    const rooms = []
+    for (let i = 0; i < size; i++) {
+      // 楼层号生成 1 ~ 20
+      const floor = Math.floor(Math.random() * 19) + 1
+      // 具体的房间号生成 1 ~ 3
+      const No = Math.floor(Math.random() * 2) + 1
+      const room = [floor, 0, No].join('')
+      // 检测是否有重复的房间号
+      if (rooms.includes(room)) return
+      // 记录生成完整的房间号
+      rooms.push(room)
+    }
+    // 渲染数据
+    this.setData({ rooms, point, building })
   },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
-  }
 })
