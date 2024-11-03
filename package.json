@@ -13,6 +13,7 @@
     "prettier": "^3.3.3"
   },
   "dependencies": {
+    "@babel/runtime": "^7.26.0",
     "@vant/weapp": "^1.11.7",
     "dotenv": "^16.4.5",
     "wechat-http": "^0.0.8",
