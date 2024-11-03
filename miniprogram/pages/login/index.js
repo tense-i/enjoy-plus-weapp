@@ -25,6 +25,11 @@ Page({
     if (!valid) return wx.utils.toast(message)
     // 显示倒计时组件
     this.setData({ countDownVisible: true })
+    // 发送短信验证码
+    const res = await wx.http.get('/code', {
+      mobile: this.data.mobile,
+    })
+    console.log(res)
   },
 
   countDownChange(ev) {
@@ -47,10 +52,20 @@ Page({
     wx.utils.toast('登录成功')
     app.setToken('token', res.data.token)
     app.setToken('refreshToken', res.data.refreshToken)
-    //返回到上个页面
-    wx.redirectTo({
-      url: this.data.redirect,
-    })
+    // 跳转
+    console.log(this.data.redirect)
+    if (this.data.redirect === '') {
+      //返回到上个页面
+      wx.redirectTo({
+        url: this.data.redirect,
+      })
+    }
+    else {
+      // 跳转到首页
+      wx.switchTab({
+        url: '/pages/index/index',
+      })
+    }
   },
   handleInput(ev) {
     const { field } = ev.currentTarget.dataset

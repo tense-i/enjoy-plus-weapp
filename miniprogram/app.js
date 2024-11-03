@@ -12,6 +12,15 @@ wx.config = config
 
 App({
   globalData: {},
+  setToken(key, token) {
+    // 保存到全局
+    this[key] = token
+    // 保存到本地
+    wx.setStorageSync(key, token)
+  },
+  getToken(key) {
+    return wx.getStorageSync(key)
+  },
   onLaunch() {
     // 初始化地图SDK
     // 由于qqMap的构造函数需要传入key，而key在环境变量中，所以需要在这里初始化（确保key在环境变量中）
