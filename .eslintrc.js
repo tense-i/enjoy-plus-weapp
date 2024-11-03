@@ -12,7 +12,7 @@ module.exports = {
   },
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: 'module',
+    sourceType: "module",
     ecmaFeatures: {
       modules: true,
     },
@@ -27,7 +27,6 @@ module.exports = {
     requirePlugin: true,
     requireMiniProgram: true,
   },
-  extends: 'eslint:recommended',
-
+  extends: ["eslint:recommended"],
   rules: {},
-}
+};

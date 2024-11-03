@@ -1,0 +1,12 @@
+<van-dialog
+  id="vanDialog"
+  show="{{ showDialog }}"
+  title="提示"
+  show-cancel-button
+>
+  <view>您尚未登录，是否前往登录？</view>
+</van-dialog>
+
+<view>
+  <slot wx:if="{{isLogin}}"></slot>
+</view>

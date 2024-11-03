@@ -29,7 +29,6 @@ function equal(value1, value2) {
     props: {
         value: {
             type: null,
-            observer: 'observeValue',
         },
         integer: {
             type: Boolean,
@@ -79,38 +78,42 @@ function equal(value1, value2) {
     data: {
         currentValue: '',
     },
+    watch: {
+        value: function () {
+            this.observeValue();
+        },
+    },
     created: function () {
         this.setData({
-            currentValue: this.format(this.data.value),
+            currentValue: this.format(this.data.value).newValue,
         });
     },
     methods: {
         observeValue: function () {
-            var _a = this.data, value = _a.value, currentValue = _a.currentValue;
-            if (!equal(value, currentValue)) {
-                this.setData({ currentValue: this.format(value) });
-            }
+            var value = this.data.value;
+            this.setData({ currentValue: this.format(value).newValue });
         },
         check: function () {
-            var val = this.format(this.data.currentValue);
-            if (!equal(val, this.data.currentValue)) {
-                this.setData({ currentValue: val });
+            var newValue = this.format(this.data.currentValue).newValue;
+            if (!equal(newValue, this.data.currentValue)) {
+                this.setData({ currentValue: newValue });
             }
         },
         isDisabled: function (type) {
             var _a = this.data, disabled = _a.disabled, disablePlus = _a.disablePlus, disableMinus = _a.disableMinus, currentValue = _a.currentValue, max = _a.max, min = _a.min;
             if (type === 'plus') {
-                return disabled || disablePlus || currentValue >= max;
+                return disabled || disablePlus || +currentValue >= +max;
             }
-            return disabled || disableMinus || currentValue <= min;
+            return disabled || disableMinus || +currentValue <= +min;
         },
         onFocus: function (event) {
             this.$emit('focus', event.detail);
         },
         onBlur: function (event) {
-            var value = this.format(event.detail.value);
-            this.emitChange(value);
-            this.$emit('blur', __assign(__assign({}, event.detail), { value: value }));
+            var data = this.format(event.detail.value);
+            this.setData({ currentValue: data.newValue });
+            this.emitChange(data);
+            this.$emit('blur', __assign(__assign({}, event.detail), { value: +data.newValue }));
         },
         // filter illegal characters
         filter: function (value) {
@@ -120,17 +123,16 @@ function equal(value1, value2) {
             }
             return value;
         },
-        // limit value range
         format: function (value) {
-            value = this.filter(value);
+            // filter illegal characters and format integer
+            var safeValue = this.filter(value);
             // format range
-            value = value === '' ? 0 : +value;
-            value = Math.max(Math.min(this.data.max, value), this.data.min);
+            var rangeValue = Math.max(Math.min(this.data.max, +safeValue), this.data.min);
             // format decimal
-            if ((0, validator_1.isDef)(this.data.decimalLength)) {
-                value = value.toFixed(this.data.decimalLength);
-            }
-            return value;
+            var newValue = (0, validator_1.isDef)(this.data.decimalLength)
+                ? rangeValue.toFixed(this.data.decimalLength)
+                : String(rangeValue);
+            return { value: value, newValue: newValue };
         },
         onInput: function (event) {
             var _a = (event.detail || {}).value, value = _a === void 0 ? '' : _a;
@@ -138,19 +140,16 @@ function equal(value1, value2) {
             if (value === '') {
                 return;
             }
-            var formatted = this.filter(value);
-            // limit max decimal length
-            if ((0, validator_1.isDef)(this.data.decimalLength) && formatted.indexOf('.') !== -1) {
-                var pair = formatted.split('.');
-                formatted = "".concat(pair[0], ".").concat(pair[1].slice(0, this.data.decimalLength));
-            }
+            var formatted = this.format(value);
             this.emitChange(formatted);
         },
-        emitChange: function (value) {
+        emitChange: function (data) {
+            var value = data.value, newValue = data.newValue;
             if (!this.data.asyncChange) {
-                this.setData({ currentValue: value });
+                // fix when input 11. parsed to 11, unable to enter decimal
+                this.setData({ currentValue: +value === +newValue ? value : newValue });
             }
-            this.$emit('change', value);
+            this.$emit('change', +newValue);
         },
         onChange: function () {
             var type = this.type;
@@ -159,7 +158,7 @@ function equal(value1, value2) {
                 return;
             }
             var diff = type === 'minus' ? -this.data.step : +this.data.step;
-            var value = this.format(add(+this.data.currentValue, diff));
+            var value = this.format(String(add(+this.data.currentValue, diff)));
             this.emitChange(value);
             this.$emit(type);
         },

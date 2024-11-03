@@ -12,11 +12,11 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var component_1 = require("../common/component");
-var utils_1 = require("./utils");
-var shared_1 = require("./shared");
 var validator_1 = require("../common/validator");
+var shared_1 = require("./shared");
+var utils_1 = require("./utils");
 (0, component_1.VantComponent)({
-    props: __assign(__assign({ disabled: Boolean, multiple: Boolean, uploadText: String, useBeforeRead: Boolean, afterRead: null, beforeRead: null, previewSize: {
+    props: __assign(__assign(__assign(__assign({ disabled: Boolean, multiple: Boolean, uploadText: String, useBeforeRead: Boolean, afterRead: null, beforeRead: null, previewSize: {
             type: null,
             value: 80,
         }, name: {
@@ -47,13 +47,16 @@ var validator_1 = require("../common/validator");
         }, previewFullImage: {
             type: Boolean,
             value: true,
+        }, videoFit: {
+            type: String,
+            value: 'contain',
         }, imageFit: {
             type: String,
             value: 'scaleToFill',
         }, uploadIcon: {
             type: String,
             value: 'photograph',
-        } }, shared_1.chooseImageProps), shared_1.chooseVideoProps),
+        } }, shared_1.imageProps), shared_1.videoProps), shared_1.mediaProps), shared_1.messageFileProps),
     data: {
         lists: [],
         isInCount: true,
@@ -129,11 +132,12 @@ var validator_1 = require("../common/validator");
             if (!this.data.previewFullImage)
                 return;
             var index = event.currentTarget.dataset.index;
-            var lists = this.data.lists;
+            var _a = this.data, lists = _a.lists, showmenu = _a.showmenu;
             var item = lists[index];
             wx.previewImage({
                 urls: lists.filter(function (item) { return (0, utils_1.isImageFile)(item); }).map(function (item) { return item.url; }),
                 current: item.url,
+                showmenu: showmenu,
                 fail: function () {
                     wx.showToast({ title: '预览图片失败', icon: 'none' });
                 },
@@ -144,17 +148,28 @@ var validator_1 = require("../common/validator");
                 return;
             var index = event.currentTarget.dataset.index;
             var lists = this.data.lists;
+            var sources = [];
+            var current = lists.reduce(function (sum, cur, curIndex) {
+                if (!(0, utils_1.isVideoFile)(cur)) {
+                    return sum;
+                }
+                sources.push(__assign(__assign({}, cur), { type: 'video' }));
+                if (curIndex < index) {
+                    sum++;
+                }
+                return sum;
+            }, 0);
             wx.previewMedia({
-                sources: lists
-                    .filter(function (item) { return (0, utils_1.isVideoFile)(item); })
-                    .map(function (item) { return (__assign(__assign({}, item), { type: 'video' })); }),
-                current: index,
+                sources: sources,
+                current: current,
                 fail: function () {
                     wx.showToast({ title: '预览视频失败', icon: 'none' });
                 },
             });
         },
         onPreviewFile: function (event) {
+            if (!this.data.previewFile)
+                return;
             var index = event.currentTarget.dataset.index;
             wx.openDocument({
                 filePath: this.data.lists[index].url,

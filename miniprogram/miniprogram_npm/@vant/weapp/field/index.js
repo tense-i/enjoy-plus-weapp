@@ -35,22 +35,45 @@ var props_1 = require("./props");
         }, clearIcon: {
             type: String,
             value: 'clear',
+        }, extraEventParams: {
+            type: Boolean,
+            value: false,
         } }),
     data: {
         focused: false,
         innerValue: '',
         showClear: false,
     },
+    watch: {
+        value: function (value) {
+            if (value !== this.value) {
+                this.setData({ innerValue: value });
+                this.value = value;
+                this.setShowClear();
+            }
+        },
+        clearTrigger: function () {
+            this.setShowClear();
+        },
+    },
     created: function () {
         this.value = this.data.value;
         this.setData({ innerValue: this.value });
     },
     methods: {
+        formatValue: function (value) {
+            var maxlength = this.data.maxlength;
+            if (maxlength !== -1 && value.length > maxlength) {
+                return value.slice(0, maxlength);
+            }
+            return value;
+        },
         onInput: function (event) {
             var _a = (event.detail || {}).value, value = _a === void 0 ? '' : _a;
-            this.value = value;
+            var formatValue = this.formatValue(value);
+            this.value = formatValue;
             this.setShowClear();
-            this.emitChange();
+            return this.emitChange(__assign(__assign({}, event.detail), { value: formatValue }));
         },
         onFocus: function (event) {
             this.focused = true;
@@ -74,7 +97,7 @@ var props_1 = require("./props");
             this.value = '';
             this.setShowClear();
             (0, utils_1.nextTick)(function () {
-                _this.emitChange();
+                _this.emitChange({ value: '' });
                 _this.$emit('clear', '');
             });
         },
@@ -90,7 +113,7 @@ var props_1 = require("./props");
             if (value === '') {
                 this.setData({ innerValue: '' });
             }
-            this.emitChange();
+            this.emitChange({ value: value });
         },
         onLineChange: function (event) {
             this.$emit('linechange', event.detail);
@@ -98,13 +121,20 @@ var props_1 = require("./props");
         onKeyboardHeightChange: function (event) {
             this.$emit('keyboardheightchange', event.detail);
         },
-        emitChange: function () {
-            var _this = this;
-            this.setData({ value: this.value });
-            (0, utils_1.nextTick)(function () {
-                _this.$emit('input', _this.value);
-                _this.$emit('change', _this.value);
-            });
+        onBindNicknameReview: function (event) {
+            this.$emit('nicknamereview', event.detail);
+        },
+        emitChange: function (detail) {
+            var extraEventParams = this.data.extraEventParams;
+            this.setData({ value: detail.value });
+            var result;
+            var data = extraEventParams
+                ? __assign(__assign({}, detail), { callback: function (data) {
+                        result = data;
+                    } }) : detail.value;
+            this.$emit('input', data);
+            this.$emit('change', data);
+            return result;
         },
         setShowClear: function () {
             var _a = this.data, clearable = _a.clearable, readonly = _a.readonly, clearTrigger = _a.clearTrigger;
@@ -115,7 +145,7 @@ var props_1 = require("./props");
                 var trigger = clearTrigger === 'always' || (clearTrigger === 'focus' && focused);
                 showClear = hasValue && trigger;
             }
-            this.setData({ showClear: showClear });
+            this.setView({ showClear: showClear });
         },
         noop: function () { },
     },
