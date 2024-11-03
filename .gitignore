@@ -1,3 +1,9 @@
 node_modules
 .DS_Store
 project.private.config.json
+config.env
+./miniprogram/miniprogram_npm
+
+config.env.js
+
+./miniprogram/config.env.js

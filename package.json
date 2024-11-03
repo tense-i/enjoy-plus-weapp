@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@vant/weapp": "^1.11.7",
+    "dotenv": "^16.4.5",
     "wechat-http": "^0.0.8",
     "wechat-validate": "^0.0.3"
   }
