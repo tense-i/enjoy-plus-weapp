@@ -8,7 +8,10 @@
         title="{{address}}"
         border="{{false}}"
       >
-        <text class="enjoy-icon icon-locate">重新定位</text>
+        <text
+          class="enjoy-icon icon-locate"
+          bind:tap="getLocation"
+        >重新定位</text>
       </van-cell>
     </van-cell-group>
     <van-cell-group
