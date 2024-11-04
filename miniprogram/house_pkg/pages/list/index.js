@@ -27,7 +27,8 @@ Page({
       this.setData({
         dialogVisible: true,
       })
-
+      this.cellId = ev.mark.id
+      this.cellIndex = ev.mark.index
       // swiper-cell 滑块关闭
       instance.close()
     }

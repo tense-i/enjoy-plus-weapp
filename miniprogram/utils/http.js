@@ -12,6 +12,7 @@ http.intercept.request = (header) => {
 }
 // 响应拦截器，返回核心数据 data
 http.intercept.response = async ({ data, config }) => {
+  console.log(data)
   if (data.code === 401) {
     const app = getApp()
     // refreshToken也过期了、必须重新登录

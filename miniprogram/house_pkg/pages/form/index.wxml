@@ -39,7 +39,7 @@
           <van-radio
             icon-size="36rpx"
             checked-color="#5591AF"
-            name="2"
+            name="0"
           >女</van-radio>
         </van-radio-group>
       </van-cell>
@@ -70,7 +70,11 @@
         <view
           class="upload-button"
           wx:else
-        ><text class="enjoy-icon icon-add"></text>上传人像面照片</view>
+        ><text
+            class="enjoy-icon icon-add"
+            bind:tap="uploadPicture"
+            mark:type="idcardFrontUrl"
+          ></text>上传人像面照片</view>
       </view>
       <view class="id-card-back">
         <view
@@ -87,7 +91,11 @@
         <view
           class="upload-button"
           wx:else
-        ><text class="enjoy-icon icon-add"></text>上传国徽面照片</view>
+        ><text
+            class="enjoy-icon icon-add"
+            bind:tap="uploadPicture"
+            mark:type="idcardBackUrl"
+          ></text>上传国徽面照片</view>
       </view>
     </view>
   </view>

@@ -50,7 +50,10 @@
                 value="{{item.name}}"
               />
             </van-cell-group>
-            <view slot="right">删除</view>
+            <van-button
+              slot="right"
+              bind:tap="deleteHouse"
+            >删除</van-button>
           </van-swipe-cell>
         </view>
       </view>

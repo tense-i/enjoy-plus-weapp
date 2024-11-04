@@ -1,10 +1,19 @@
 Page({
   editHouse() {
+    debugger
+    console.log(this.data.houseDetail)
+
     wx.navigateTo({
-      url: '/house_pkg/pages/form/index',
+      url: `/house_pkg/pages/form/index?id=${this.data.id}`,
+      // 传递房屋ID
+      query: {
+        houseDetail: this.data.houseDetail,
+        id: this.data.id,
+      },
     })
   },
   onLoad({ id }) {
+    this.setData({ id })
     this.getHouseDetail(id)
   },
   // 房屋详情接口
